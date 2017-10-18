@@ -1,6 +1,24 @@
+/*
+ * FILE: linkedList.c
+ * AUTHOR: Jack McNair 18927430
+ * LAST MOD: 18/10/2017
+ *
+ * Contains functionality for manipulating double-ended, singly-linked lists containing dynamically
+ * allocated strings. Functions contained allow for list creation, insertion at the front and back,
+ * removal from the front, retrieval from a specified index and memory deallocation.
+ */
+
 #include <stdlib.h>
 #include "linkedList.h"
 
+/*
+ * createList
+ *
+ * Allocates memory for a linked list. Sets the head and tail of that list to null.
+ *
+ * RETURNS:
+ * 	A pointer to an empty linked list
+ */
 LinkedList* createList( void )
 {
 	LinkedList* list;
@@ -11,6 +29,15 @@ LinkedList* createList( void )
 	return list;
 }
 
+/*
+ * insertFirst
+ *
+ * Inserts an element into the front of a linked list.
+ *
+ * INPUTS:
+ * 	list - The list into which the element is inserted
+ * 	inWord - The string to be inserted into the list
+ */
 void insertFirst( LinkedList* list, char* inWord )
 {
 	LinkedListNode* newNode;
@@ -27,6 +54,15 @@ void insertFirst( LinkedList* list, char* inWord )
 	list -> head = newNode;
 }
 
+/*
+ * insertLast
+ *
+ * Inserts and element into the back of a linked list.
+ *
+ * INPUTS:
+ * 	list - The list into which the element is inserted
+ * 	inWord - The string to be inserted into the list
+ */
 void insertLast( LinkedList* list, char* inWord )
 {
 	LinkedListNode* newNode;
@@ -45,6 +81,18 @@ void insertLast( LinkedList* list, char* inWord )
 	}
 }
 
+/*
+ * getElement
+ *
+ * Retrieves the element at the specified position in the linked list.
+ *
+ * INPUTS:
+ * 	list - The list to retrieve the element from
+ * 	index - The position of the element to be retrieved
+ *
+ * RETURNS:
+ * 	The string at the specified position
+ */
 char* getElement( LinkedList* list, int index )
 {
 	int i;
@@ -58,6 +106,17 @@ char* getElement( LinkedList* list, int index )
 	return node -> word;
 }
 
+/*
+ * removeFirst
+ *
+ * Removes the element at the front of a linked list and deallocates its memory.
+ *
+ * INPUTS:
+ * 	list - The list to remove the element from
+ *
+ * RETURNS:
+ * 	The removed string
+ */
 char* removeFirst( LinkedList* list )
 {
 	char* returnWord = NULL;
@@ -78,6 +137,14 @@ char* removeFirst( LinkedList* list )
 	return returnWord;
 }
 
+/*
+ * freeList
+ *
+ * Deallocates all memory associated with a specified linked list.
+ *
+ * INPUTS:
+ * 	list - The list to be deallocated
+ */
 void freeList( LinkedList* list )
 {
 	char* word;

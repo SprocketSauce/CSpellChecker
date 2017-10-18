@@ -1,13 +1,34 @@
+/*
+ * FILE: config.c
+ * AUTHOR: Jack McNair 18927430
+ * LAST MOD: 18/10/2017
+ *
+ * Contains functionality for creating Config structs and reading .spellconf files.
+ */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "config.h"
 
+/* STATIC METHOD DECLARATIONS */
 static void readConfig( Config* );
 
+/*
+ * getConfig
+ *
+ * Creates and returns a struct containing the contents of a configuration file. The first time this
+ * function is called, the .spellconf file is read and saved to static memory. Every subsequent call
+ * simply returns the config struct that was saved to static memory. If the .spellconf file cannot
+ * be read, or is missing fields, the default configuration is using "words" as the dictionary, 3 as
+ * the maximum difference and autocorrect off.
+ *
+ * RETURNS:
+ * 	A Config struct containing the contents of a settings file
+ */
 Config* getConfig( void )
 {
-	static Config* config = NULL;
+	static Config* config = NULL; /* static, so the file is only read once */
 	
 	if ( config == NULL )
 	{
@@ -23,6 +44,14 @@ Config* getConfig( void )
 	return config;
 }
 
+/*
+ * readConfig
+ *
+ * Reads a configuration file, assigning the read information to the input Config struct.
+ *
+ * INPUTS:
+ * 	config - The struct to assign the read information to
+ */
 static void readConfig( Config* config )
 {
 	int read;
@@ -62,6 +91,11 @@ static void readConfig( Config* config )
 			}
 			
 			read = fscanf( file, "%s = %s\n", setting, value );
+		}
+
+		if ( ferror( file ) )
+		{
+			perror( "Error reading .spellconf" );
 		}
 
 		fclose( file );
