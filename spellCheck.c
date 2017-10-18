@@ -88,7 +88,7 @@ static int commitChange( char* word, char* suggestion )
 		{
 			printf( "\nPossible spelling error detected\n" );
 			printf( "Original word: %s\n", word );
-			printf( "Suggested word: %s \n", suggestion );
+			printf( "Suggested word: %s\n", suggestion );
 
 			commit = inputYN( "Accept changes? (y/n): " );
 		}
@@ -253,13 +253,15 @@ static int inputYN( char* prompt )
 	char result;
 	
 	printf( prompt );
-	scanf( " %c%*s", &sel );
+	scanf( " %c", &sel );
+	while ( getchar() != '\n' );
 
 	while ( sel != 'y' && sel != 'Y' && sel != 'n' && sel != 'N' )
 	{
 		printf( "Invalid input\n" );
 		printf( prompt );
-		scanf( " %c%*s", &sel );
+		scanf( " %c", &sel );
+		while ( getchar() != '\n' );
 	}
 
 	if ( sel == 'y' || sel == 'Y' )
