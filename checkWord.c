@@ -3,17 +3,31 @@
 #include <string.h>
 #include "checkWord.h"
 #include "check.h"
-#include "linkedList.h"
+#include "config.h"
 
 int main( int argc, char* argv[] )
 {
+	Config* config;
 	ActionFunc func = &checkDif;
-	char* testCheck[] = { "spefling", "checl" };
-	char** dict;
-	int dictLen;
-	readDictionary( &dict, &dictLen );
+	char** dict, **words;
+	int dictLen, numWords;
 
-	check( testCheck, 2, dict, dictLen, 3, func );
+	if ( argc == 2 )
+	{
+		config = getConfig();
+
+		readText( config -> dict, &dict, &dictLen );
+		printf( "DICTIONARY READ\n" );
+
+		readText( argv[1], &words, &numWords );
+		check( words, numWords, dict, dictLen, config -> maxDif, func );
+
+		makeCorrections( argv[1], words, numWords );
+
+		freeArray( words, numWords );
+		freeArray( dict, dictLen );
+		free( config );
+	}
 
 	return 0;
 }
@@ -21,24 +35,36 @@ int main( int argc, char* argv[] )
 
 int checkDif( char* word, char* suggestion )
 {
-	printf( "\nWord: " );
-	printf( word );
-	printf( "\nSuggestion: " );
-	printf( suggestion );
+	int commit;
+	Config* config;
+	
+	config = getConfig();
 
-	return 0;
+	if ( config -> autoCorrect == 1 )
+	{
+		commit = 1;
+	}
+	else
+	{
+		printf( "\nPossible spelling error detected\n" );
+		printf( "Original word: %s\n", word );
+		printf( "Suggested word: %s \n", suggestion );
+
+		commit = inputYN( "Accept changes? (y/n): " );
+	}
+
+	return commit;
 }
 
 
-void readDictionary( char*** dict, int* dictLen )
+void readText( char* filename, char*** words, int* numWords )
 {
 	FILE* file;
-	int i, lineLen;
-	char* inWord, *end;
-	char line[47]; /* Longest word in the dictionary is 45 characters */
+	int i, end;
+	char word[47]; /* Longest word in the dictionary is 45 characters */
 	LinkedList* list;
 
-	file = fopen( "words", "r" );
+	file = fopen( filename, "r" );
 	if ( file == NULL )
 	{
 		perror("Error opening dictionary");
@@ -46,25 +72,22 @@ void readDictionary( char*** dict, int* dictLen )
 	else
 	{
 		list = createList();
-		*dictLen = 0;
+		*numWords = 0;
 
-		end = fgets( line, 47, file );
-		while ( end != NULL )
+		end = fscanf( file, "%s%*c", word );
+
+		while ( end != EOF )
 		{
-			*dictLen = *dictLen + 1;
-			strtok( line, "\n" );
-			lineLen = strlen( line );
-			inWord = (char*)malloc( lineLen * sizeof(char) );
-			strncpy( inWord, line, lineLen );
-			insertLast( list, inWord );
-			end = fgets( line, 47, file );
+			(*numWords)++;
+			wordToList( word, list );
+			end = fscanf( file, "%s%*c", word );
 		}
 
-		*dict = (char**)malloc( *dictLen * sizeof(char*) );
+		*words = (char**)malloc( *numWords * sizeof(char*) );
 
-		for ( i = 0; i < *dictLen; i++ )
+		for ( i = 0; i < *numWords; i++ )
 		{
-			(*dict)[i] = removeFirst( list );
+			(*words)[i] = removeFirst( list );
 		}
 
 		freeList( list );
@@ -78,19 +101,65 @@ void readDictionary( char*** dict, int* dictLen )
 	}
 }
 
-int getNumLines( FILE* file )
+void wordToList( char word[], LinkedList* list )
 {
-	char ch;
-	int lines = 1;
-	
-	do
-	{
-		ch = fgetc( file );
-		if ( ch == '\n' )
-		{
-			lines++;
-		}
-	} while ( ch != EOF );
+	int wordLen;
+	char* inWord;
 
-	return lines;
+	wordLen = strlen( word ) + 1;
+	inWord = (char*)malloc( wordLen * sizeof(char) );
+	strcpy( inWord, word );
+	insertLast( list, inWord );
+}
+
+void makeCorrections( char* filename, char** words, int numWords )
+{
+	int i;
+	FILE* file = fopen( filename, "w" );
+
+	for ( i = 0; i < numWords; i++ )
+	{
+		fprintf( file, "%s ", words[i] );
+	}
+
+	fclose( file );
+}
+
+void freeArray( char** array, int numEntries )
+{
+	int i;
+
+	for ( i = 0; i < numEntries; i++ )
+	{
+		free( array[i] );
+	}
+
+	free( array );
+}
+
+int inputYN( char* prompt )
+{
+	char sel;
+	char result;
+	
+	printf( prompt );
+	scanf( " %c", &sel );
+
+	while ( sel != 'y' && sel != 'Y' && sel != 'n' && sel != 'N' )
+	{
+		printf( "Invalid input\n" );
+		printf( prompt );
+		scanf( " %c", &sel );
+	}
+
+	if ( sel == 'y' || sel == 'Y' )
+	{
+		result = 1;
+	}
+	else
+	{
+		result = 0;
+	}
+
+	return result;
 }
