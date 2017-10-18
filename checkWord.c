@@ -40,17 +40,24 @@ int checkDif( char* word, char* suggestion )
 	
 	config = getConfig();
 
-	if ( config -> autoCorrect == 1 )
+	if ( suggestion != NULL )
 	{
-		commit = 1;
+		if ( config -> autoCorrect == 1 )
+		{
+			commit = 1;
+		}
+		else
+		{
+			printf( "\nPossible spelling error detected\n" );
+			printf( "Original word: %s\n", word );
+			printf( "Suggested word: %s \n", suggestion );
+
+			commit = inputYN( "Accept changes? (y/n): " );
+		}
 	}
 	else
 	{
-		printf( "\nPossible spelling error detected\n" );
-		printf( "Original word: %s\n", word );
-		printf( "Suggested word: %s \n", suggestion );
-
-		commit = inputYN( "Accept changes? (y/n): " );
+		commit = 0;
 	}
 
 	return commit;
@@ -61,7 +68,7 @@ void readText( char* filename, char*** words, int* numWords )
 {
 	FILE* file;
 	int i, end;
-	char word[47]; /* Longest word in the dictionary is 45 characters */
+	char word[46]; /* Longest word in the dictionary is 45 characters */
 	LinkedList* list;
 
 	file = fopen( filename, "r" );
