@@ -27,6 +27,10 @@
                 all relevant methods.
      config.c - Contains functionality for loading a 
                 .spellconf file.
+      check.o - Contains function for comparing words
+                to the dictionary.
+      check.h - Declares above function, defines
+                relevant function pointer.
      makefile - Allows for easy compilation and 
                 cleaning.
    .spellconf - Configuration file.

@@ -3,13 +3,13 @@
  * AUTHOR: Jack McNair 18927430
  * LAST MOD: 18/10/2017
  *
- * Defines a double-ended, singly-linked list for storing dynamically-allocated strings.
+ * Defines a double-ended, singly-linked list for storing void pointers.
  */
 
 /*
  * LinkedListNode
  *
- * A node in a singly-linked list that stores a dynamically-allocated string.
+ * A node in a singly-linked list that stores a void pointer.
  *
  * FIELDS:
  *  word - Pointer to the string stored by the list node
@@ -17,7 +17,7 @@
  */
 typedef struct LinkedListNode
 {
-	char* word;
+	void* value;
 	struct LinkedListNode* next;
 } LinkedListNode;
 
@@ -38,12 +38,12 @@ typedef struct
 
 LinkedList* createList( void );
 
-void insertFirst( LinkedList*, char* );
+void insertFirst( LinkedList*, void* );
 
-void insertLast( LinkedList*, char* );
+void insertLast( LinkedList*, void* );
 
-char* getElement( LinkedList*, int );
+void* getElement( LinkedList*, int );
 
-char* removeFirst( LinkedList* );
+void* removeFirst( LinkedList* );
 
 void freeList( LinkedList* );

@@ -58,8 +58,6 @@ static void readConfig( Config* config )
 	char setting[14], value[41];
 	FILE* file = fopen( ".spellconf", "r" );
 
-	printf( "READING CONFIG FILE\n" );
-
 	if ( file == NULL )
 	{
 		perror( "Error opening .spellconf" );
@@ -96,6 +94,10 @@ static void readConfig( Config* config )
 		if ( ferror( file ) )
 		{
 			perror( "Error reading .spellconf" );
+		}
+		else
+		{
+			printf( "CONFIG FILE READ\n" );
 		}
 
 		fclose( file );

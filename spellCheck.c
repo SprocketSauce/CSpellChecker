@@ -41,6 +41,8 @@ int main( int argc, char* argv[] )
 		printf( "DICTIONARY READ\n" );
 
 		readText( argv[1], &words, &numWords );
+		printf( "INPUT FILE READ\n" );
+
 		check( words, numWords, dict, dictLen, config -> maxDif, func );
 
 		makeCorrections( argv[1], words, numWords );
@@ -145,7 +147,7 @@ static void readText( char* filename, char*** words, int* numWords )
 
 		for ( i = 0; i < *numWords; i++ )
 		{
-			(*words)[i] = removeFirst( list );
+			(*words)[i] = (char*)removeFirst( list );
 		}
 
 		freeList( list );

@@ -3,8 +3,8 @@
  * AUTHOR: Jack McNair 18927430
  * LAST MOD: 18/10/2017
  *
- * Contains functionality for manipulating double-ended, singly-linked lists containing dynamically
- * allocated strings. Functions contained allow for list creation, insertion at the front and back,
+ * Contains functionality for manipulating double-ended, singly-linked lists containing void 
+ * pointers. Functions contained allow for list creation, insertion at the front and back,
  * removal from the front, retrieval from a specified index and memory deallocation.
  */
 
@@ -36,14 +36,14 @@ LinkedList* createList( void )
  *
  * INPUTS:
  * 	list - The list into which the element is inserted
- * 	inWord - The string to be inserted into the list
+ * 	inWord - The void pointer to be inserted into the list
  */
-void insertFirst( LinkedList* list, char* inWord )
+void insertFirst( LinkedList* list, void* inValue )
 {
 	LinkedListNode* newNode;
 
 	newNode = (LinkedListNode*)malloc( sizeof(LinkedListNode) );
-	newNode -> word = inWord;
+	newNode -> value = inValue;
 	newNode -> next = list -> head;
 
 	if ( list -> tail == NULL )
@@ -61,20 +61,20 @@ void insertFirst( LinkedList* list, char* inWord )
  *
  * INPUTS:
  * 	list - The list into which the element is inserted
- * 	inWord - The string to be inserted into the list
+ * 	inWord - The void pointer to be inserted into the list
  */
-void insertLast( LinkedList* list, char* inWord )
+void insertLast( LinkedList* list, void* inValue )
 {
 	LinkedListNode* newNode;
 
 	if ( list -> head == NULL )
 	{
-		insertFirst( list, inWord );
+		insertFirst( list, inValue );
 	}
 	else
 	{
 		newNode = (LinkedListNode*)malloc( sizeof(LinkedListNode) );
-		newNode -> word = inWord;
+		newNode -> value = inValue;
 		newNode -> next = NULL;
 		list -> tail -> next = newNode;
 		list -> tail = newNode;
@@ -91,9 +91,9 @@ void insertLast( LinkedList* list, char* inWord )
  * 	index - The position of the element to be retrieved
  *
  * RETURNS:
- * 	The string at the specified position
+ * 	The element at the specified position
  */
-char* getElement( LinkedList* list, int index )
+void* getElement( LinkedList* list, int index )
 {
 	int i;
 	LinkedListNode* node = list -> head;
@@ -103,7 +103,7 @@ char* getElement( LinkedList* list, int index )
 		node = node -> next;		
 	}
 	
-	return node -> word;
+	return node -> value;
 }
 
 /*
@@ -115,11 +115,11 @@ char* getElement( LinkedList* list, int index )
  * 	list - The list to remove the element from
  *
  * RETURNS:
- * 	The removed string
+ * 	The removed element
  */
-char* removeFirst( LinkedList* list )
+void* removeFirst( LinkedList* list )
 {
-	char* returnWord = NULL;
+	void* returnValue = NULL;
 	LinkedListNode* node = NULL;
 
 	if ( list -> head != NULL )
@@ -130,11 +130,11 @@ char* removeFirst( LinkedList* list )
 			list -> tail = NULL;
 		}
 		list -> head = node -> next;
-		returnWord = node -> word;
+		returnValue = node -> value;
 		free( node );
 	}
 
-	return returnWord;
+	return returnValue;
 }
 
 /*
@@ -147,12 +147,12 @@ char* removeFirst( LinkedList* list )
  */
 void freeList( LinkedList* list )
 {
-	char* word;
+	void* value;
 	
 	do
 	{
-		word = removeFirst( list );
-	} while ( word != NULL );
+		value = removeFirst( list );
+	} while ( value != NULL );
 
 	free( list );
 }
